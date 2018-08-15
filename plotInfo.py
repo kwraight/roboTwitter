@@ -18,9 +18,11 @@ parser.add_argument('--start', help='start date: dd-mm-yy')
 parser.add_argument('--end', help='end date: dd-mm-yy')
 parser.add_argument('--types', nargs='+', help='measurement type, e.g. temp')
 parser.add_argument('--groupOpt', help='grouping for histogram: r - merge roboIDs; t - merge types; d split days')
+parser.add_argument('--arguments', nargs='+', help='argument selection: which (space separated) (inetger) arguments from tweet (default=4,6)')
 parser.add_argument('--save', help='save plot: defaultName=\'summary_DATE\'')
 parser.add_argument('--saveName', help='plot name (if saving). Use png extension used if none given')
 parser.add_argument('--deleteOpt', help='delete used tweets')
+parser.add_argument('--pages', help='how many pages to be used')
 
 ### check the inputs
 args = parser.parse_args()
@@ -53,6 +55,23 @@ deletedTweets=0
 if not args.deleteOpt is None:
     deleteOpt = args.deleteOpt
 
+tweetStrArgs=[]
+if not args.arguments is None:
+    for a in args.arguments:
+        try:
+            tweetStrArgs.append(int(a))
+        except:
+            print "suggested argument",a,"not an integer"
+else:
+    tweetStrArgs=[4,6]
+
+pages=-1
+if not args.pages is None:
+    try:
+        pages = int(args.pages)
+    except:
+        pages=-1
+
 save="False"
 if not args.save is None:
     save = args.save
@@ -66,7 +85,7 @@ if len(roboIDs)<1 or len(types)<1:
     print "please set robo and type arguments"
     exit()
 
-print ">>> plotInfo parameters... \nroboIDs:",roboIDs,", types:",types,", start:",startDate,", end:",endDate,", groupOpt:",groupOpt,", deleteOpt:",deleteOpt,", save:",save,", saveName:",saveName
+print ">>> plotInfo parameters... \nroboIDs:",roboIDs,", types:",types,", start:",startDate,", end:",endDate,", groupOpt:",groupOpt,", deleteOpt:",deleteOpt,", save:",save,", saveName:",saveName,", tweetStrArgs:",tweetStrArgs,", pages:",pages
 
 #check for roboIDs
 foundRobo=False
@@ -123,16 +142,23 @@ def main():
                 #print s.created_at
                 
                 #dependant on formatting but for the moment...
-                val=s.text.split(" ")[4]
-                try:
-                    float(val)
-                except ValueError:
-                    #skip tweet if format is not recognised
-                    print "Not a float"
-                    continue
-                
+                vals=[]
+                noFloat=False
+                for ta in tweetStrArgs:
+                    val=s.text.split(" ")[ta]
+                    #print "val:",val
+                    try:
+                        val=float(val)
+                    except ValueError:
+                        #skip tweet if format is not recognised
+                        print "argument",ta,"of string not a float"
+                        noFloat=True
+                        continue
+                    vals.append(val)
+        
+                if noFloat: continue
                 #add value to dateVal collection
-                dateVals.append({'date':s.created_at, 'val':val, 'rid':rid, 'tid':tid})
+                dateVals.append({'date':s.created_at, 'vals':vals, 'rid':rid, 'tid':tid})
                 if deleteOpt=="True" or deleteOpt=="true":
                     api.destroy_status(s.id)
                     global deletedTweets
@@ -152,6 +178,8 @@ def main():
         else:
             break
 
+        if pages>-1 and pageNum>=pages:
+            break
         pageNum+= 1
         print "next page:",pageNum
 
@@ -187,10 +215,13 @@ def main():
     for dvl in dateValsList:
         for tid in typeGroup:
             for rid in roboGroup:
-                label=tid+" "+rid
-                if "d" in groupOpt:
-                    label=label+": "+dvl[0]['date'].strftime("%d-%m-%y")
-                plt.plot([d['date'] for d in dvl if tid in d['tid'] and rid in d['rid']], [d['val'] for d in dvl if tid in d['tid']and rid in d['rid']], label=label)
+                for ta in range(0,len(tweetStrArgs),1):
+                    label=tid+" "+rid
+                    if len(tweetStrArgs)>1:
+                        label=label+"("+str(ta)+")"
+                    if "d" in groupOpt:
+                        label=label+": "+dvl[0]['date'].strftime("%d-%m-%y")
+                    plt.plot([d['date'] for d in dvl if tid in d['tid'] and rid in d['rid']], [d['vals'][ta] for d in dvl if tid in d['tid']and rid in d['rid']], label=label)
     plt.gcf().autofmt_xdate()
     plt.xlabel("timeline")
     plt.ylabel("".join([t for t in types]))
