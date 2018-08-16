@@ -1,0 +1,137 @@
+//twitter bits
+#include <TwitterWebAPI.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+//sensor bits
+#include "DHT.h"
+#include <stdlib.h>
+//wi-fi bits
+#include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+
+//sensor details
+#define DHTPIN 4     // what digital pin the DHT22 is conected to
+#define DHTTYPE DHT22   // There are multiple kinds of DHT sensors
+
+//wi-fi details
+char ssid[] = "BCCW-Towers";       // your network SSID (name)
+char password[] = "LiverpoolGin1982*";  // your network key
+
+//twitter details
+#define TWI_TIMEOUT 2000  // in msec
+const char *ntp_server = "pool.ntp.org";  // time1.google.com, time.nist.gov, pool.ntp.org
+int timezone = 0;                        // US Eastern timezone -05:00 HRS
+static char const consumer_key[]    = "YOUR_INFO_HERE";
+static char const consumer_sec[]    = "YOUR_INFO_HERE";
+static char const accesstoken[]     = "YOUR_INFO_HERE";
+static char const accesstoken_sec[] = "YOUR_INFO_HERE";
+
+//start clients
+DHT dht(DHTPIN, DHTTYPE); //sensor
+WiFiClientSecure client; //wi-fi
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, ntp_server, timezone*3600, 60000);  // NTP server pool, offset (in seconds), update interval (in milliseconds)
+TwitterClient tcr(timeClient, consumer_key, consumer_sec, accesstoken, accesstoken_sec);
+
+
+void setup() {
+
+  //general serial
+  Serial.begin(115200);
+
+  // Set WiFi to station mode and disconnect from an AP if it was Previously
+  // connected
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+  delay(100);
+
+  // Attempt to connect to Wifi network:
+  Serial.print("Connecting Wifi: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  IPAddress ip = WiFi.localIP();
+  Serial.println(ip);
+
+  //twitter credentials
+  tcr.startNTP();
+
+  Serial.println("setup all done");
+}
+
+//use to time update cycles
+int timeSinceLastRead = 0;
+
+
+void loop() {
+  
+  // Report every 300s
+  if(timeSinceLastRead > 300) {
+    // Reading temperature or humidity takes about 250 milliseconds!
+    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+    float h = dht.readHumidity();
+    // Read temperature as Celsius (the default)
+    float t = dht.readTemperature();
+    // Read temperature as Fahrenheit (isFahrenheit = true)
+    float f = dht.readTemperature(true);
+
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(h) || isnan(t) || isnan(f)) {
+      Serial.println("Failed to read from DHT sensor!");
+
+    
+      //make twitter post
+    char buf[100];
+    sprintf(buf, "test from afar NO INFO. #tempHum #Robo8266 #Problem"); 
+    std::string twitter_post_msg= buf;
+    Serial.println(twitter_post_msg.c_str()); // for debug
+    tcr.tweet(twitter_post_msg); // tweet!
+    
+      timeSinceLastRead = 0;
+      return;
+    }
+
+    // Compute heat index in Fahrenheit (the default)
+    float hif = dht.computeHeatIndex(f, h);
+    // Compute heat index in Celsius (isFahreheit = false)
+    float hic = dht.computeHeatIndex(t, h, false);
+
+    //spit out sensor info for debug
+    Serial.print("Humidity: ");
+    Serial.print(h);
+    Serial.print(" %\t");
+    Serial.print("Temperature: ");
+    Serial.print(t);
+    Serial.print(" *C ");
+    Serial.print(f);
+    Serial.print(" *F\t");
+    Serial.print("Heat index: ");
+    Serial.print(hic);
+    Serial.print(" *C ");
+    Serial.print(hif);
+    Serial.print(" *F\n");
+    
+    //make twitter post
+    char buf[100];
+    char str_temp[10];
+    char str_humi[10];
+    dtostrf(t, 9, 6, str_temp);
+    dtostrf(h, 9, 6, str_humi);
+    sprintf(buf, "test from afar T/H(C/%%): %s / %s #tempHum #Robo8266", str_temp, str_humi); ;
+    std::string twitter_post_msg= buf;
+    Serial.println(twitter_post_msg.c_str()); // for debug
+    tcr.tweet(twitter_post_msg); // tweet!
+
+    //reset timer
+    timeSinceLastRead = 0;
+  }
+  //count for next update
+  delay(1000);
+  timeSinceLastRead += 1;
+}
