@@ -1,6 +1,7 @@
 # roboTwitter
 
-Python (tweepy) based scripts to post sensor infromation to twitter feed @FriendPpe
+Python (tweepy) based scripts to read twitter feed (@FriendPpe) and post plots to twitter feed
+  * plot infromation: plotInfo.py
   * post information: postInfo.py
   * get information: getInfo.py
   * summarise information and post summary: summaryInfo.py
