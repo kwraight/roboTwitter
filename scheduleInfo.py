@@ -2,14 +2,16 @@
 import schedule
 import subprocess
 import time
+import datetime
+
+#def job():
+#    print "I'm working"
 
 def job():
-    print "I'm working"
+    print subprocess.check_output(['python', '/home/pi/repositories/roboTwitter/summaryInfo.py', '--robos', '8266', 'Uno', '--type', 'temp', '--arguments', '4'])
+    print "done job for today:\n",datetime.datetime.now()
 
-def jobFile():
-    print subprocess.check_output(['python','/afs/phas.gla.ac.uk/user/k/kwraight/testJob.py'])
-
-schedule.every(1).minutes.do(jobFile)
+schedule.every(24).hours.do(jobFile)
 schedule.every(0.75).minutes.do(job)
 
 while True:
