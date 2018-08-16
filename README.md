@@ -2,11 +2,11 @@
 
 Python (tweepy) based scripts to read twitter feed ([@FriendPpe](https://twitter.com/FriendPpe)) and post plots to twitter feed
   * plot infromation: plotInfo.py
-      python plotInfo.py --robos 8266 Uno --type temp --start 14-08-18 --end 16-08-18 --arguments 4
+      > python plotInfo.py --robos 8266 Uno --type temp --start 14-08-18 --end 16-08-18 --arguments 4
   * post information: postInfo.py
   * get information: getInfo.py
   * summarise information and post summary: summaryInfo.py
-      python summaryInfo.py --robos 8266 Uno --type temp --arguments 4
+      > python summaryInfo.py --robos 8266 Uno --type temp --arguments 4
 
 
 Example tweet:
