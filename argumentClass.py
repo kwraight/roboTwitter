@@ -3,7 +3,14 @@ from datetime import datetime, date, time
 import configSettings
 import argparse
 
-
+def Str2Int(theStr,refStr=""):
+    try:
+        return int(theStr)
+    except ValueError:
+        print refStr+" string \'"+theStr+"\' cannot be cast as int"
+    except:
+        print refStr+" string \'"+theStr+"\' is not recognise"
+    return -1
 
 def GetArgs():
     ### get arguments for setting parameters
