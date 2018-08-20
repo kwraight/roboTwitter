@@ -4,15 +4,17 @@ import time
 import configSettings
 
 from termcolor import cprint
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import argumentClass
+
 
 ### check the inputs
 args = argumentClass.GetArgs()
 print args
 
-exit()
+# them robots
+robots=["robo8266","roboUno"]
 ### set parameters
 roboIDs=[]
 if not args.robos is None:
@@ -67,7 +69,7 @@ if not args.saveName is None:
     save="True"
 
 if len(roboIDs)<1 or len(types)<1:
-    print "please set robo and type arguments"
+    print "please set robo ["+", ".join([r for r in robots])+"] and type (e.g. temp) arguments"
     exit()
 
 print ">>> plotInfo parameters... \nroboIDs:",roboIDs,", types:",types,", start:",startDate,", end:",endDate,", groupOpt:",groupOpt,", deleteOpt:",deleteOpt,", save:",save,", saveName:",saveName,", tweetStrArgs:",tweetStrArgs,", pages:",pages
