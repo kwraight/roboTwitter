@@ -8,11 +8,14 @@ from termcolor import cprint
 
 import argumentClass
 
-
 ### check the inputs
 args = argumentClass.GetArgs()
 print args
 
+#for k in vars(args).iteritems():
+#    print k[1]
+
+exit()
 # them robots
 robots=["robo8266","roboUno"]
 ### set parameters
