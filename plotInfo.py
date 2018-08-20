@@ -6,28 +6,13 @@ import configSettings
 from termcolor import cprint
 import matplotlib.pyplot as plt
 
-import argparse
-
-# them robots
-robots=["robo8266","roboUno"]
-
-### get arguments for setting parameters
-parser = argparse.ArgumentParser()
-parser.add_argument('--robos', nargs='+', help='name of robot: '+str(robots))
-parser.add_argument('--start', help='start date: dd-mm-yy')
-parser.add_argument('--end', help='end date: dd-mm-yy')
-parser.add_argument('--types', nargs='+', help='measurement type, e.g. temp')
-parser.add_argument('--groupOpt', help='grouping for histogram: r - merge roboIDs; t - merge types; d split days')
-parser.add_argument('--arguments', nargs='+', help='argument selection: which (space separated) (inetger) arguments from tweet (default=4,6)')
-parser.add_argument('--save', help='save plot: defaultName=\'summary_DATE\'')
-parser.add_argument('--saveName', help='plot name (if saving). Use png extension used if none given')
-parser.add_argument('--deleteOpt', help='delete used tweets')
-parser.add_argument('--pages', help='how many pages to be used')
+import argumentClass
 
 ### check the inputs
-args = parser.parse_args()
+args = argumentClass.GetArgs()
 print args
 
+exit()
 ### set parameters
 roboIDs=[]
 if not args.robos is None:
