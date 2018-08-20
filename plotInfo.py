@@ -4,7 +4,7 @@ import time
 import configSettings
 
 from termcolor import cprint
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 import argumentClass
 
@@ -177,10 +177,11 @@ def PlotData(argDict, infoArr):
                     p.append(i)
                     break
             if foundDate==False:
-                p.append([i])
+                plotList.append([i])
     else:
-        p=[i]
+        plotList=[infoArr]
 
+    print "infoArr size:", len(infoArr)
     print "plotList size:", len(plotList)
     print "total plotList size:", sum([len(p) for p in plotList])
 
@@ -194,7 +195,7 @@ def PlotData(argDict, infoArr):
                         label=label+"("+str(ta)+")"
                     if "d" in argDict['groupOpt']:
                         label=label+": "+p[0]['date'].strftime("%d-%m-%y")
-                    plt.plot([p['date'] for p in plotList if tid in p['tid'] and rid in p['rid']], [p['vals'][ta] for p in plotList if tid in d['tid']and rid in d['rid']], label=label)
+                    plt.plot([d['date'] for d in p if tid in d['tid'] and rid in d['rid']], [d['vals'][ta] for d in p if tid in d['tid']and rid in d['rid']], label=label)
     plt.gcf().autofmt_xdate()
     plt.xlabel("timeline")
     plt.ylabel("".join(argDict['types']))
@@ -210,6 +211,6 @@ def PlotData(argDict, infoArr):
 twitterInfo=GleanTwitter(plotDict)
 
 
-#PlotData(plotDict,twitterInfo)
+PlotData(plotDict,twitterInfo)
     
 exit()
