@@ -42,27 +42,25 @@ def main():
                 print "got",k
                 sumDict[p]=k[1]
 
-    sumDict=plotInfo.FormatDict(sumDict)
-
-    sumDict['start']=str(datetime.datetime.now().day-1)+"-"+str(datetime.datetime.now().month)+"-"+str(datetime.datetime.now().year)[2:]
+    sumDict['start']=(datetime.datetime.now() - datetime.timedelta(1))
     sumDict['saveName']="summary_"+datetime.datetime.now().strftime("%Y-%m-%d")+".png"
+
+    sumDict=plotInfo.FormatDict(sumDict)
 
     print "### summary dictionary\n",sumDict
 
-    exit()
-
     twitterInfo=plotInfo.GleanTwitter(sumDict)
 
-    plotInfo.PlotData(plotDict,twitterInfo)
+    plotInfo.PlotData(sumDict,twitterInfo)
 
     if "False" in sumDict['noTweet'] or "false" in sumDict['noTweet']:
         message = "Summary for "+str(datetime.datetime.now().day)+"-"+str(datetime.datetime.now().month)+"-"+str(datetime.datetime.now().year)[2:]+" #summary"
         tweet_image(message, fileName)
     else:
         print "no update tweet sent as requested"
+    print ">>>summaryInfo finished."
 
 if __name__ == "__main__":
     main()
-
-exit()
+    exit()
 

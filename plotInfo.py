@@ -19,27 +19,29 @@ def FormatDict(argDict):
     robots=["roboUno", "robo8266"]
 
     ### formatting parameters
-    if not "NYS" in argDict['start']:
-        try:
-            argDict['start']=datetime.strptime(argDict['start'],'%d-%m-%y')
-        except:
+    if "datetime" not in str(type(argDict['start'])):
+        if "str" in str(type(argDict['start'])) and not "NYS" in argDict['start']:
+            try:
+                argDict['start']=datetime.strptime(argDict['start'],'%d-%m-%y')
+            except:
+                argDict['start']=datetime.strptime("01-01-01",'%d-%m-%y')
+        else:
             argDict['start']=datetime.strptime("01-01-01",'%d-%m-%y')
-    else:
-        argDict['start']=datetime.strptime("01-01-01",'%d-%m-%y')
 
-    if not "NYS" in argDict['end']:
-        argDict['end']=datetime.strptime(argDict['end'],'%d-%m-%y')
-    else:
-        argDict['end']=datetime.today()
+    if "datetime" not in str(type(argDict['end'])):
+        if "str" in str(type(argDict['end'])) and not "NYS" in argDict['end']:
+            argDict['end']=datetime.strptime(argDict['end'],'%d-%m-%y')
+        else:
+            argDict['end']=datetime.today()
 
     if argDict['save']=="True" or argDict['save']=="true":
         if "NYS" in argDict['saveName']:
             argDict['saveName']="summary_"+datetime.now().strftime("%Y-%m-%d")+".png"
-        if not "." in plotName:
+        if not "." in argDict['saveName']:
             argDict['saveName']=argDict['saveName']+".png"
 
     if "NYS" not in argDict['saveName']:
-        argDict['save']=="True"
+        argDict['save']="True"
 
     if len(argDict['robos'])<1 or len(['types'])<1:
         print "please set robo ["+", ".join([r for r in robots])+"] and type (e.g. temp) arguments"
@@ -196,7 +198,8 @@ def PlotData(argDict, infoArr):
     plt.legend(loc='best')
 
     if argDict['save']=="True" or argDict['save']=="true":
-        plt.savefig(argDict['plotName'])
+        print "PlotData: saving (not showing)",argDict['saveName']
+        plt.savefig(argDict['saveName'])
     else:
         plt.show()
 
@@ -206,7 +209,7 @@ def PlotData(argDict, infoArr):
 ###############################
 
 def main():
-    print ">>>PlotInfo running..."
+    print ">>>plotInfo running..."
 
     ### basic dictionary of parameters
     ### defaults as of August 2018 --> 'tweetArgs'=[4], 'types':["temp"], 'robos':["roboUno", "robo8266"]
@@ -232,8 +235,11 @@ def main():
 
 
     PlotData(plotDict,twitterInfo)
+    print ">>>plotInfo finished."
 
 if __name__ == "__main__":
     main()
+    exit()
 
-exit()
+
+
