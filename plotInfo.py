@@ -1,3 +1,4 @@
+### glean infromation from twitter and make plot
 import tweepy
 from datetime import datetime, date, time
 import time
@@ -8,62 +9,55 @@ import matplotlib.pyplot as plt
 
 import argumentClass
 
-### get the inputs
-args = argumentClass.GetArgs()
-print args
 
-robots=["roboUno", "robo8266"]
-### basic dictiionary of parameters
-### defaults as of August 2018 --> 'tweetArgs'=[4], 'types':["temp"], 'robos':["roboUno", "robo8266"]
-plotDict={'robos':robots, 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
+###############################
+### USEFUL FUNCTIONS
+###############################
 
-### set parameters
-for p in plotDict.keys():
-    for k in vars(args).iteritems():
-        if p in k[0] and not k[1]==None:
-            print "got",k
-            plotDict[p]=k[1]
+def FormatDict(argDict):
 
-### formating parameters
-if not "NYS" in plotDict['start']:
-    try:
-        plotDict['start']=datetime.strptime(plotDict['start'],'%d-%m-%y')
-    except:
-        plotDict['start']=datetime.strptime("01-01-01",'%d-%m-%y')
-else:
-    plotDict['start']=datetime.strptime("01-01-01",'%d-%m-%y')
+    robots=["roboUno", "robo8266"]
 
-if not "NYS" in plotDict['end']:
-    plotDict['end']=datetime.strptime(plotDict['end'],'%d-%m-%y')
-else:
-    plotDict['end']=datetime.today()
+    ### formatting parameters
+    if not "NYS" in argDict['start']:
+        try:
+            argDict['start']=datetime.strptime(argDict['start'],'%d-%m-%y')
+        except:
+            argDict['start']=datetime.strptime("01-01-01",'%d-%m-%y')
+    else:
+        argDict['start']=datetime.strptime("01-01-01",'%d-%m-%y')
 
-if plotDict['save']=="True" or plotDict['save']=="true":
-    if "NYS" in plotDict['saveName']:
-        plotDict['saveName']="summary_"+datetime.now().strftime("%Y-%m-%d")+".png"
-    if not "." in plotName:
-        plotDict['saveName']=plotDict['saveName']+".png"
+    if not "NYS" in argDict['end']:
+        argDict['end']=datetime.strptime(argDict['end'],'%d-%m-%y')
+    else:
+        argDict['end']=datetime.today()
 
+    if argDict['save']=="True" or argDict['save']=="true":
+        if "NYS" in argDict['saveName']:
+            argDict['saveName']="summary_"+datetime.now().strftime("%Y-%m-%d")+".png"
+        if not "." in plotName:
+            argDict['saveName']=argDict['saveName']+".png"
 
+    if "NYS" not in argDict['saveName']:
+        argDict['save']=="True"
 
-if len(plotDict['robos'])<1 or len(['types'])<1:
-    print "please set robo ["+", ".join([r for r in robots])+"] and type (e.g. temp) arguments"
+    if len(argDict['robos'])<1 or len(['types'])<1:
+        print "please set robo ["+", ".join([r for r in robots])+"] and type (e.g. temp) arguments"
 
+    #check for roboIDs
+    foundRobo=False
+    for id in argDict['robos']:
+        for r in robots:
+            if id in r:
+                foundRobo=True
+                break
+    if foundRobo==False:
+        print "robot IDs not found in:",robots
+        exit()
 
-#check for roboIDs
-foundRobo=False
-for id in plotDict['robos']:
-    for r in robots:
-        if id in r:
-            foundRobo=True
-            break
-if foundRobo==False:
-    print "robot IDs not found in:",robots
-    exit()
+    #print "### argument dictionary\n",argDict
 
-
-print plotDict
-#exit()
+    return argDict
 
 def GleanTwitter(argDict):
 
@@ -207,10 +201,39 @@ def PlotData(argDict, infoArr):
         plt.show()
 
 
+###############################
+### EXECUTE
+###############################
 
-twitterInfo=GleanTwitter(plotDict)
+def main():
+    print ">>>PlotInfo running..."
+
+    ### basic dictionary of parameters
+    ### defaults as of August 2018 --> 'tweetArgs'=[4], 'types':["temp"], 'robos':["roboUno", "robo8266"]
+    plotDict={'robos':["Uno","8266"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
+
+    ### get the inputs
+    args = argumentClass.GetArgs()
+    #print args
+
+    ### set parameters
+    for p in plotDict.keys():
+        for k in vars(args).iteritems():
+            if p in k[0] and not k[1]==None:
+                print "got",k
+                plotDict[p]=k[1]
 
 
-PlotData(plotDict,twitterInfo)
-    
+    plotDict=FormatDict(plotDict)
+
+    print "### plotDict:\n",plotDict
+
+    twitterInfo=GleanTwitter(plotDict)
+
+
+    PlotData(plotDict,twitterInfo)
+
+if __name__ == "__main__":
+    main()
+
 exit()
