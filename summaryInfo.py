@@ -1,7 +1,6 @@
 ### use plotInfo to make plot from twitter info, save and post to twitter
 import datetime
 import os
-import subprocess
 import argparse
 import tweepy
 import configSettings

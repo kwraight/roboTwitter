@@ -1,4 +1,4 @@
-#
+# basic argument list definition & parsing and useful functions
 from datetime import datetime, date, time
 import configSettings
 import argparse

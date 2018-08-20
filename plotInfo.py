@@ -1,4 +1,4 @@
-### glean infromation from twitter and make plot
+### glean information from twitter and make plot
 import tweepy
 from datetime import datetime, date, time
 import time
