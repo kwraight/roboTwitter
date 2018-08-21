@@ -3,6 +3,7 @@ import tweepy
 from datetime import datetime, date, time
 import time
 import configSettings
+import copy
 
 from termcolor import cprint
 import matplotlib.pyplot as plt
@@ -61,7 +62,7 @@ def FormatDict(argDict):
 
     return argDict
 
-def GleanTwitter(argDict):
+def GleanTwitter(argDict, opt="values"):
 
     deletedTweets=0
     api=configSettings.get_api()
@@ -72,6 +73,8 @@ def GleanTwitter(argDict):
 
 
     infoArr=[] #save gleaned info
+    delArr=[]
+    count=0
     while True:
         #retrieve tweets aka status list
         statList=api.user_timeline(id="FriendPpe",page=pageNum)
@@ -106,35 +109,45 @@ def GleanTwitter(argDict):
                             break
                 # throw away if hashtags don't match
                 if hashCheck<2:
+                    if argDict['deleteOpt']=="True" or argDict['deleteOpt']=="true":
+                        delArr.append(s.id)
                     continue
                 #print s.text
                 #print s.created_at
                 
-                #dependant on formatting but for the moment...
-                vals=[]
-                noFloat=False
-                for ta in argDict['tweetArgs']:
-                    index=argumentClass.Str2Int(ta,"tweetArgs")
-                    if index==-1:
-                        continue
-                    val=s.text.split(" ")[index]
-                    #print "val:",val
-                    try:
-                        val=float(val)
-                    except ValueError:
-                        #skip tweet if format is not recognised
-                        print "argument",int(ta),"of string not a float"
-                        noFloat=True
-                        continue
-                    vals.append(val)
-        
-                #throw away if any data missing
-                if noFloat: continue
-                #add value to dateVal collection
-                infoArr.append({'date':s.created_at, 'vals':vals, 'rid':rid, 'tid':tid})
+                if "val" in opt and (argDict['noValues']=="False" or argDict['noValues']=="false"):
+                    #dependant on formatting but for the moment...
+                    vals=[]
+                    noFloat=False
+                    for ta in argDict['tweetArgs']:
+                        index=argumentClass.Str2Int(ta,"tweetArgs")
+                        if index==-1:
+                            continue
+                        val=s.text.split(" ")[index]
+                        #print "val:",val
+                        try:
+                            val=float(val)
+                        except ValueError:
+                            #skip tweet if format is not recognised
+                            print "argument",int(ta),"of string not a float"
+                            noFloat=True
+                            continue
+                        vals.append(val)
+                        
+                    #throw away if any data missing
+                    if noFloat: continue
+                        
+                    #add value to dateVal collection
+                    infoArr.append({'date':s.created_at, 'vals':vals, 'rid':rid, 'tid':tid})
+                    count+=1
+
+                
+                else:
+                    count+=1
+                
                 if argDict['deleteOpt']=="True" or argDict['deleteOpt']=="true":
-                    api.destroy_status(s.id)
-                    deletedTweets=deletedTweets+1
+                    delArr.append(s.id)
+
         else:
             #print "no statList"
             break
@@ -145,9 +158,11 @@ def GleanTwitter(argDict):
         print "next page:",pageNum
 
 
-    print "GleanTwitter finds",len(infoArr),"data points"
+    print "GleanTwitter finds {0} data points in {1} pages ".format(count,pageNum)
     if argDict['deleteOpt']=="True" or argDict['deleteOpt']=="true":
-        print "deleted tweets:",deletedTweets    
+        for d in delArr:
+            api.destroy_status(d)
+        print "deleted tweets:",len(delArr)
 
     return infoArr
 
@@ -181,6 +196,10 @@ def PlotData(argDict, infoArr):
     print "plotList size:", len(plotList)
     print "total plotList size:", sum([len(p) for p in plotList])
 
+    if sum([len(p) for p in plotList])<1:
+        print "nothing to plot!"
+        return
+
     plt.figure("time trend for"+"".join(argDict['types']))
     for p in plotList:
         for tid in typeGroup:
@@ -213,7 +232,8 @@ def main():
 
     ### basic dictionary of parameters
     ### defaults as of August 2018 --> 'tweetArgs'=[4], 'types':["temp"], 'robos':["roboUno", "robo8266"]
-    plotDict={'robos':["Uno","8266"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
+    plotDict=copy.deepcopy(argumentClass.templatePlotDict)
+    #{'robos':["Uno","8266"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
 
     ### get the inputs
     args = argumentClass.GetArgs()
@@ -231,10 +251,10 @@ def main():
 
     print "### plotDict:\n",plotDict
 
-    twitterInfo=GleanTwitter(plotDict)
+    tweetArr=GleanTwitter(plotDict, "values")
 
 
-    PlotData(plotDict,twitterInfo)
+    PlotData(plotDict,tweetArr)
     print ">>>plotInfo finished."
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-#basic schedule job to summarise data, delete data and tweet summary plot
+#basic schedule job to use summaryInfo to summarise data, delete data and tweet summary plot
 import schedule
 import subprocess
 import time

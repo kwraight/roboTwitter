@@ -12,7 +12,7 @@ def Str2Int(theStr,refStr=""):
         print refStr+" string \'"+theStr+"\' is not recognise"
     return -1
 
-
+templatePlotDict={'robos':["Uno","8266"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS", 'noValues':"False"}
 
 def GetArgs():
     ### get arguments for setting parameters
@@ -28,6 +28,7 @@ def GetArgs():
     parser.add_argument('--deleteOpt', help='delete used tweets')
     parser.add_argument('--pages', help='how many pages to be used')
     parser.add_argument('--noTweet', help='suppress update twitter')
+    parser.add_argument('--noValues', help='count only, no plots')
 
     ### check the inputs
     args = parser.parse_args()
