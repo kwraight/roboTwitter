@@ -89,7 +89,10 @@ def GleanTwitter(argDict, opt="values"):
                 #filter by hashtags to get info 
                 for h in s.entities['hashtags']:
                     if "Problem" in h['text']:
-                        hashCheck=-1
+                        hashCheck=-100
+                        break
+                    if "summary" in h['text']:
+                        hashCheck=0
                         break
                     #check robots
                     for id in argDict['robos']:
@@ -110,7 +113,8 @@ def GleanTwitter(argDict, opt="values"):
                 # throw away if hashtags don't match
                 if hashCheck<2:
                     if argDict['deleteOpt']=="True" or argDict['deleteOpt']=="true":
-                        delArr.append(s.id)
+                        if hashCheck<0: # save the summaries
+                            delArr.append(s.id)
                     continue
                 #print s.text
                 #print s.created_at
