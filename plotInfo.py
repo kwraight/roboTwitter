@@ -77,7 +77,7 @@ def GleanTwitter(argDict, opt="values"):
     count=0
     while True:
         #retrieve tweets aka status list
-        statList=api.user_timeline(id="FriendPpe",page=pageNum)
+        statList=api.user_timeline(id="FriendPpe",page=pageNum) 
         #print "\tpage",pageNum,"size of statList:",len(statList)
         if statList:
             for s in statList:
