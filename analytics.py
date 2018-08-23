@@ -2,7 +2,7 @@
 import tweepy
 from datetime import datetime, date, time
 import time
-import configSettings
+import configSettings_pwd
 import matplotlib.pyplot as plt
 import numpy as np
 import argumentClass
@@ -49,7 +49,7 @@ def GleanTwitter(argDict):
     
     topics=[]
 
-    api=configSettings.get_api()
+    api=configSettings_pwd.get_api()
     print "\n%%% time check: "+str(datetime.now())
     # get posts
     pageNum=0 #loop over pages
@@ -129,7 +129,7 @@ def main():
     args = argumentClass.GetArgs()
     
     ### set parameters
-    argDict={'who':"LibDems", 'start':"01-01-01", 'end':datetime.now(), 'pages':"-1", 'topics':"nhs"}
+    argDict={'who':"FriendPpe", 'start':"01-01-01", 'end':datetime.now(), 'pages':"-1", 'topics':"nhs"}
     for k in vars(args).iteritems():
         if not k[1]==None:
             print "got",k
