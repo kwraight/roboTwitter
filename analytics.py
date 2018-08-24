@@ -2,7 +2,7 @@
 import tweepy
 from datetime import datetime, date, time
 import time
-import configSettings_pwd
+import ../configSettings_pwd
 import matplotlib.pyplot as plt
 import numpy as np
 import argumentClass
