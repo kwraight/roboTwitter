@@ -3,10 +3,11 @@ import datetime
 import os
 import argparse
 import tweepy
-import ../configs/configSettings_ppe
 
 import plotInfo
 import argumentClass
+sys.path.insert(0, '../configs/')
+import configSettings_ppe
 
 
 ###############################

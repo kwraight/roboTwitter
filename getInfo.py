@@ -1,10 +1,11 @@
 import tweepy
 from datetime import datetime, date, time
 import time
-import ../configs/configSettings_ppe
 
 from termcolor import cprint
 import matplotlib.pyplot as plt
+sys.path.insert(0, '../configs/')
+import configSettings_ppe
  
 
 

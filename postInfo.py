@@ -1,7 +1,8 @@
 import tweepy
 from datetime import datetime, date, time
 import time
-import ../configs/configSettings_ppe
+sys.path.insert(0, '../configs/')
+import configSettings_ppe
     
     api=configSettings.get_api()
     for i in range(0,5,1):
