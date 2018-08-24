@@ -1,7 +1,7 @@
 import tweepy
 from datetime import datetime, date, time
 import time
-import ../configSettings_ppe
+import ../configs/configSettings_ppe
 
 from termcolor import cprint
 import matplotlib.pyplot as plt

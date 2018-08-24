@@ -3,7 +3,7 @@ import datetime
 import os
 import argparse
 import tweepy
-import ../configSettings_ppe
+import ../configs/configSettings_ppe
 
 import plotInfo
 import argumentClass
