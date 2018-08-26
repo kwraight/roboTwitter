@@ -6,8 +6,9 @@ import tweepy
 
 import plotInfo
 import argumentClass
+import sys
 sys.path.insert(0, '../configs/')
-import configSettings_ppe
+import configSettings_ppe as configSettings
 
 
 ###############################
@@ -32,7 +33,7 @@ def main():
 
     ### basic dictionary of parameters
     sumDict={'noTweet':"False"}
-    plotDict={'robos':["Uno","8266"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
+    plotDict={'who':"FriendPpe", 'robos':["Uno","8266"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
     sumDict.update(plotDict)
 
     ### set parameters
@@ -51,7 +52,7 @@ def main():
 
     twitterInfo=plotInfo.GleanTwitter(sumDict)
 
-    plotInfo.PlotData(sumDict,twitterInfo)
+    fileName=plotInfo.PlotData(sumDict,twitterInfo)
 
     if "False" in sumDict['noTweet'] or "false" in sumDict['noTweet']:
         message = "Summary for "+str(datetime.datetime.now().day)+"-"+str(datetime.datetime.now().month)+"-"+str(datetime.datetime.now().year)[2:]+" #summary"

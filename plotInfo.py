@@ -8,8 +8,9 @@ from termcolor import cprint
 import matplotlib.pyplot as plt
 
 import argumentClass
+import sys
 sys.path.insert(0, '../configs/')
-import configSettings_ppe
+import configSettings_ppe as configSettings
 
 
 ###############################
@@ -76,14 +77,19 @@ def GleanTwitter(argDict, opt="values"):
     infoArr=[] #save gleaned info
     delArr=[]
     count=0
-    while True:
+    loopGood=True
+    while loopGood:
         #retrieve tweets aka status list
         statList=api.user_timeline(id=argDict['who'],page=pageNum)
         #print "\tpage",pageNum,"size of statList:",len(statList)
         if statList:
             for s in statList:
-                if s.created_at < argDict['start'] or s.created_at > argDict['end']:
+                if s.created_at > argDict['end']:
                     continue
+                if s.created_at < argDict['start']:
+                    loopGood=False
+                    print s.created_at,"earlier than",argDict['start']
+                    break
                 hashCheck=0
                 rid="NYS"
                 tid="NYS"
@@ -120,7 +126,10 @@ def GleanTwitter(argDict, opt="values"):
                 #print s.text
                 #print s.created_at
                 
-                if "val" in opt and (argDict['noValues']=="False" or argDict['noValues']=="false"):
+                if "val" in opt:
+                    if argDict['noValues']=="True" or argDict['noValues']=="true":
+                        count+=1
+                        continue
                     #dependant on formatting but for the moment...
                     vals=[]
                     noFloat=False
@@ -159,7 +168,7 @@ def GleanTwitter(argDict, opt="values"):
         if pageLimit>-1 and pageNum>=pageLimit:
             break
         pageNum+= 1
-        print "next page:",pageNum
+        print "next page:",pageNum,", from:",s.created_at
 
 
     print "GleanTwitter finds {0} data points in {1} pages ".format(count,pageNum)
@@ -226,6 +235,8 @@ def PlotData(argDict, infoArr):
     else:
         plt.show()
 
+    return argDict['saveName']
+
 
 ###############################
 ### EXECUTE
@@ -250,8 +261,10 @@ def main():
                 print "got",k
                 plotDict[p]=k[1]
 
+    plotDict={'groupOpt': 'NYS', 'saveName': 'plots/summary_2018-08-26.png', 'end': datetime(2018, 8, 26, 23, 29, 45, 150624), 'deleteOpt': 'NYS', 'robos': ['Uno', '8266'], 'who': 'FriendPpe', 'start': datetime(2018, 8, 25, 23, 29, 45, 150605), 'tweetArgs': [4], 'save': 'False', 'pages': -1, 'types': ['temp'], 'noValues': 'False'}
 
-    plotDict=FormatDict(plotDict)
+
+#plotDict=FormatDict(plotDict)
 
     print "### plotDict:\n",plotDict
 
