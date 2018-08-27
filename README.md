@@ -20,6 +20,7 @@ Example tweet:
 ### Python code
 
 Required python libraries:
+  * datetime
   * matplotlib
   * colorterm
   * tweepy
