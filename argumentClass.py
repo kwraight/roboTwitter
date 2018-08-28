@@ -47,3 +47,15 @@ def GetArgs():
     
     return args
 
+def PostArgs():
+    ### get arguments for setting parameters
+    parser = argparse.ArgumentParser(description="Arguments for simple post function")
+    #basics
+    parser.add_argument('--value', help='value to be posted')
+    parser.add_argument('--type', help='type of measurement ')
+    parser.add_argument('--id', help='id tag for sensor ')
+    
+    args = parser.parse_args()
+    
+    return args
+    
