@@ -1,7 +1,7 @@
 # roboTwitter
 
 Python (tweepy) based scripts to read twitter feed ([@FriendPpe](https://twitter.com/FriendPpe)) and post plots to twitter feed
-  * plot infromation: plotInfo.py
+  * plot information: plotInfo.py
       > python plotInfo.py --robos 8266 Uno --type temp --start 14-08-18 --end 16-08-18 --arguments 4
   * post information: postInfo.py
   * get information: getInfo.py
@@ -19,15 +19,16 @@ Example tweet:
 
 ### Python code
 
-Required python libraries:
+Required python libraries (beyond standard):
   * datetime
   * matplotlib
   * colorterm
   * tweepy
 
-### Arduino code
+### Sensor code
 
 Arduinos use DHT22 temperature-humidity sensor connected to:
   * Uno: use code EtherTweeter
   * 8266: use code WiFiTweeter  
+  * Pi: use tempHum_twitter
 
