@@ -19,7 +19,7 @@ import configSettings_ppe as configSettings
 
 def FormatDict(argDict):
 
-    robots=["roboUno", "robo8266"]
+    robots=["roboUno", "robo8266", "roboPi"]
 
     ### formatting parameters
     if "datetime" not in str(type(argDict['start'])):

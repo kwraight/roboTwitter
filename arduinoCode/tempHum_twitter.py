@@ -30,16 +30,12 @@ def getSensorData():
 def main(): 
    print 'starting...' 
    while True:
-       if 1==1:
-       #try: 
-           RH, T = getSensorData() 
-           infotxt= "test from afar T/H(C/%): {0} / {1}".format(T,RH)
-           print infotxt
-           tweetInfo(infotxt,"tempHum","RoboPi")
-           sleep(300) #loads DHT22 sensor values every 5 minutes
-       #except: 
-           print 'exiting.' 
-           break 
+       RH, T = getSensorData() 
+       infotxt= "test from afar T/H(C/%): {0} / {1}".format(T,RH)
+       print infotxt
+       tweetInfo(infotxt,"tempHum","RoboPi")
+       sleep(300) #loads DHT22 sensor values every 5 minutes
+       
 # call main 
 if __name__ == '__main__': 
    main()
