@@ -70,7 +70,7 @@ def GleanTwitter(argDict, opt="values"):
     api=configSettings.get_api()
     print "\n%%% time check: "+str(datetime.now())
     # get posts
-    pageNum=0 #loop over pages
+    pageNum=1 #loop over pages
     pageLimit=argumentClass.Str2Int(argDict['pages'],"pageLimit")
 
 
