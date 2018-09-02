@@ -62,6 +62,8 @@ print ">>> summary parameters... \nroboIDs:",roboIDs,", types:",types,", groupOp
 startDate=str(datetime.datetime.now().day-1)+"-"+str(datetime.datetime.now().month)+"-"+str(datetime.datetime.now().year)[2:]
 fileName="summary_"+datetime.datetime.now().strftime("%Y-%m-%d")+".png"
 
+print "ready to send"
+
 if "True" in noPlot or "true" in noPlot:
     print subprocess.check_output(['python','plotInfo.py','--robos'] + roboIDs + ['--type'] + types +['--start',startDate,'--arguments']+tweetStrArgs)
 else:
