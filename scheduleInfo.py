@@ -8,10 +8,10 @@ import datetime
 #    print "I'm working"
 
 def job():
-    print subprocess.check_output(['python', '/home/pi/repositories/roboTwitter/summaryInfo.py', '--robos', '8266', 'Uno', '--type', 'temp', '--deleteOpt', 'True', '--arguments', '4'])
+    print subprocess.check_output(['python', '/home/pi/repositories/roboTwitter/summaryInfo.py', '--robos', '8266', 'Uno', 'Pi', '--type', 'temp', '--deleteOpt', 'True', '--arguments', '4'])
     print "done job for today:\n",datetime.datetime.now()
 
-schedule.every(24).hours.do(job)
+schedule.every().day.at("17:30").do(job)
 
 while True:
     schedule.run_pending()

@@ -33,7 +33,7 @@ def main():
 
     ### basic dictionary of parameters
     sumDict={'noTweet':"False"}
-    plotDict={'who':"FriendPpe", 'robos':["Uno","8266"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
+    plotDict={'who':"FriendPpe", 'robos':["Uno","8266","Pi"], 'types':["temp"], 'start':"NYS", 'end':"NYS", 'groupOpt':"NYS", 'deleteOpt':"NYS", 'tweetArgs':[4], 'pages':-1, 'save':"False", 'saveName':"NYS"}
     sumDict.update(plotDict)
 
     ### set parameters
