@@ -13,7 +13,7 @@ def job():
     print subprocess.check_output(jobArgs)
     print "done job for today:\n",datetime.datetime.now()
 
-schedule.every().day.at("20:40").do(job)
+schedule.every().day.at("20:45").do(job)
 
 while True:
     schedule.run_pending()
