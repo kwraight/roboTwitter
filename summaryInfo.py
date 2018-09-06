@@ -3,6 +3,7 @@ import datetime
 import os
 import argparse
 import tweepy
+import copy
 
 import plotInfo
 import argumentClass
